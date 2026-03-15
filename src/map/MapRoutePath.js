@@ -5,6 +5,20 @@ import { map } from './core/MapView';
 import getSpeedColor from '../common/util/colors';
 import { useAttributePreference } from '../common/util/preferences';
 
+const smoothCoordinates = (coords, iterations = 3) => {
+  let pts = coords;
+  for (let it = 0; it < iterations; it++) {
+    const next = [pts[0]];
+    for (let i = 0; i < pts.length - 1; i++) {
+      next.push([0.75 * pts[i][0] + 0.25 * pts[i + 1][0], 0.75 * pts[i][1] + 0.25 * pts[i + 1][1]]);
+      next.push([0.25 * pts[i][0] + 0.75 * pts[i + 1][0], 0.25 * pts[i][1] + 0.75 * pts[i + 1][1]]);
+    }
+    next.push(pts[pts.length - 1]);
+    pts = next;
+  }
+  return pts;
+};
+
 const MapRoutePath = ({ positions }) => {
   const id = useId();
 
@@ -66,19 +80,23 @@ const MapRoutePath = ({ positions }) => {
   useEffect(() => {
     const minSpeed = positions.map((p) => p.speed).reduce((a, b) => Math.min(a, b), Infinity);
     const maxSpeed = positions.map((p) => p.speed).reduce((a, b) => Math.max(a, b), -Infinity);
+    const iterations = 3;
+    const step = 2 ** iterations;
+    const smoothed = smoothCoordinates(
+      positions.map((p) => [p.longitude, p.latitude]),
+      iterations,
+    );
     const features = [];
-    for (let i = 0; i < positions.length - 1; i += 1) {
+    for (let j = 0; j < smoothed.length - 1; j += 1) {
+      const origIdx = Math.min(Math.floor(j / step), positions.length - 2);
       features.push({
         type: 'Feature',
         geometry: {
           type: 'LineString',
-          coordinates: [
-            [positions[i].longitude, positions[i].latitude],
-            [positions[i + 1].longitude, positions[i + 1].latitude],
-          ],
+          coordinates: [smoothed[j], smoothed[j + 1]],
         },
         properties: {
-          color: reportColor || getSpeedColor(positions[i + 1].speed, minSpeed, maxSpeed),
+          color: reportColor || getSpeedColor(positions[origIdx + 1].speed, minSpeed, maxSpeed),
           width: mapLineWidth,
           opacity: mapLineOpacity,
         },
