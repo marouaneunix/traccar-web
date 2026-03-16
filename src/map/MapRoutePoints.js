@@ -78,14 +78,9 @@ const MapRoutePoints = ({ positions, onClick, showSpeedControl }) => {
       map.addControl(control, theme.direction === 'rtl' ? 'bottom-right' : 'bottom-left');
     }
 
-    const interval = Math.max(1, Math.floor(positions.length / 20));
-    const sampled = positions.filter(
-      (_, index) => index % interval === 0 || index === positions.length - 1,
-    );
-
     map.getSource(id)?.setData({
       type: 'FeatureCollection',
-      features: sampled.map((position, index) => ({
+      features: positions.map((position, index) => ({
         type: 'Feature',
         geometry: {
           type: 'Point',
@@ -99,7 +94,6 @@ const MapRoutePoints = ({ positions, onClick, showSpeedControl }) => {
         },
       })),
     });
-
     return () => map.removeControl(control);
   }, [onMarkerClick, positions, showSpeedControl]);
 
