@@ -9,6 +9,7 @@ import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import RouteIcon from '@mui/icons-material/Route';
+import BlurOnIcon from '@mui/icons-material/BlurOn';
 import EventRepeatIcon from '@mui/icons-material/EventRepeat';
 import NotesIcon from '@mui/icons-material/Notes';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
@@ -32,7 +33,12 @@ const ReportsMenu = () => {
       return path;
     }
     const params = new URLSearchParams();
-    if (path === '/reports/chart' || path === '/reports/route' || path === '/replay') {
+    if (
+      path === '/reports/chart' ||
+      path === '/reports/route' ||
+      path === '/reports/heatmap' ||
+      path === '/replay'
+    ) {
       const [firstDeviceId] = deviceIds;
       if (firstDeviceId != null) {
         params.append('deviceId', firstDeviceId);
@@ -96,6 +102,12 @@ const ReportsMenu = () => {
           link={buildLink('/reports/route')}
           icon={<TimelineIcon />}
           selected={location.pathname === '/reports/route'}
+        />
+        <MenuItem
+          title={t('reportHeatmap')}
+          link={buildLink('/reports/heatmap')}
+          icon={<BlurOnIcon />}
+          selected={location.pathname === '/reports/heatmap'}
         />
       </List>
       <Divider />
