@@ -34,7 +34,10 @@ const HeatmapReportPage = () => {
   return (
     <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'reportHeatmap']}>
       <div className={classes.container}>
-        <div className={classes.containerMap} style={{ flexBasis: '100%' }}>
+        <div className={classes.header}>
+          <ReportFilter onShow={onShow} deviceType="single" loading={loading} />
+        </div>
+        <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
           <MapView>
             <MapGeofence />
             {positions.length > 0 && <MapHeatmap positions={positions} />}
@@ -46,16 +49,6 @@ const HeatmapReportPage = () => {
               longitude={positions[Math.floor(positions.length / 2)].longitude}
             />
           )}
-        </div>
-        <div className={classes.containerMain}>
-          <div className={classes.header}>
-            <ReportFilter
-              onShow={onShow}
-              deviceType="single"
-              loading={loading}
-              ignoreDevice={false}
-            />
-          </div>
         </div>
       </div>
     </PageLayout>
