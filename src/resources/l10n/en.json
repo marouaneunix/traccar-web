@@ -565,6 +565,7 @@
     "reportSummary": "Summary",
     "reportDaily": "Daily Summary",
     "reportChart": "Chart",
+    "reportHeatmap": "Heatmap",
     "reportAudit": "Audit",
     "reportConfigure": "Configure",
     "reportEventTypes": "Event Types",
