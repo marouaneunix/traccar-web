@@ -16,6 +16,7 @@
     "@mui/icons-material": "^7.3.9",
     "@mui/lab": "^7.0.0-beta.17",
     "@mui/material": "^7.3.9",
+    "@mui/x-date-pickers": "^9.15.0",
     "@reduxjs/toolkit": "^2.11.2",
     "@tmcw/togeojson": "^7.1.2",
     "@turf/circle": "^7.3.4",
@@ -45,7 +46,8 @@
     "build": "vite build",
     "generate-pwa-assets": "pwa-assets-generator --preset minimal public/logo.svg",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "test:dashboard": "node --test src/dashboard/dashboardUtils.test.js"
   },
   "browserslist": {
     "production": [

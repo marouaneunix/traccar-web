@@ -3,6 +3,10 @@ import { useMemo } from 'react';
 export default (t) =>
   useMemo(
     () => ({
+      accountId: {
+        name: t('attributeWalletAccountId'),
+        type: 'string',
+      },
       'command.sender': {
         name: t('deviceCommandSender'),
         type: 'string',

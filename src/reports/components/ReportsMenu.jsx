@@ -1,4 +1,5 @@
 import { Divider, List } from '@mui/material';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import StarIcon from '@mui/icons-material/Star';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import PauseCircleFilledIcon from '@mui/icons-material/PauseCircleFilled';
@@ -9,6 +10,7 @@ import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import RouteIcon from '@mui/icons-material/Route';
+import BlurOnIcon from '@mui/icons-material/BlurOn';
 import EventRepeatIcon from '@mui/icons-material/EventRepeat';
 import NotesIcon from '@mui/icons-material/Notes';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
@@ -32,7 +34,13 @@ const ReportsMenu = () => {
       return path;
     }
     const params = new URLSearchParams();
-    if (path === '/reports/chart' || path === '/reports/route' || path === '/replay') {
+    if (
+      path === '/dashboard' ||
+      path === '/reports/chart' ||
+      path === '/reports/route' ||
+      path === '/reports/heatmap' ||
+      path === '/replay'
+    ) {
       const [firstDeviceId] = deviceIds;
       if (firstDeviceId != null) {
         params.append('deviceId', firstDeviceId);
@@ -48,6 +56,12 @@ const ReportsMenu = () => {
   return (
     <>
       <List>
+        <MenuItem
+          title={t('dashboardTitle')}
+          link={buildLink('/dashboard')}
+          icon={<DashboardIcon />}
+          selected={location.pathname === '/dashboard'}
+        />
         <MenuItem
           title={t('reportCombined')}
           link={buildLink('/reports/combined')}
@@ -96,6 +110,12 @@ const ReportsMenu = () => {
           link={buildLink('/reports/route')}
           icon={<TimelineIcon />}
           selected={location.pathname === '/reports/route'}
+        />
+        <MenuItem
+          title={t('reportHeatmap')}
+          link={buildLink('/reports/heatmap')}
+          icon={<BlurOnIcon />}
+          selected={location.pathname === '/reports/heatmap'}
         />
       </List>
       <Divider />
