@@ -1,6 +1,7 @@
 import { Route, Routes, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import MainPage from './main/MainPage';
+import DashboardPage from './dashboard/DashboardPage';
 import CombinedReportPage from './reports/CombinedReportPage';
 import PositionsReportPage from './reports/PositionsReportPage';
 import ServerPage from './settings/ServerPage';
@@ -119,6 +120,8 @@ const Navigation = () => {
       <Route path="/change-server" element={<ChangeServerPage />} />
       <Route path="/" element={<App />}>
         <Route index element={<MainPage />} />
+
+        <Route path="dashboard" element={<DashboardPage />} />
 
         <Route path="position/:id" element={<PositionPage />} />
         <Route path="network/:positionId" element={<NetworkPage />} />

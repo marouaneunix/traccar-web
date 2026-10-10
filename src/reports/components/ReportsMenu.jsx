@@ -1,4 +1,5 @@
 import { Divider, List } from '@mui/material';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import StarIcon from '@mui/icons-material/Star';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import PauseCircleFilledIcon from '@mui/icons-material/PauseCircleFilled';
@@ -34,6 +35,7 @@ const ReportsMenu = () => {
     }
     const params = new URLSearchParams();
     if (
+      path === '/dashboard' ||
       path === '/reports/chart' ||
       path === '/reports/route' ||
       path === '/reports/heatmap' ||
@@ -54,6 +56,12 @@ const ReportsMenu = () => {
   return (
     <>
       <List>
+        <MenuItem
+          title={t('dashboardTitle')}
+          link={buildLink('/dashboard')}
+          icon={<DashboardIcon />}
+          selected={location.pathname === '/dashboard'}
+        />
         <MenuItem
           title={t('reportCombined')}
           link={buildLink('/reports/combined')}

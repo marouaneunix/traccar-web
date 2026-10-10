@@ -11,6 +11,7 @@ import {
   Badge,
 } from '@mui/material';
 
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import DescriptionIcon from '@mui/icons-material/Description';
 import SettingsIcon from '@mui/icons-material/Settings';
 import MapIcon from '@mui/icons-material/Map';
@@ -43,6 +44,9 @@ const BottomMenu = () => {
     }
     if (location.pathname.startsWith('/settings')) {
       return 'settings';
+    }
+    if (location.pathname === '/dashboard') {
+      return 'dashboard';
     }
     if (location.pathname.startsWith('/reports')) {
       return 'reports';
@@ -95,6 +99,9 @@ const BottomMenu = () => {
       case 'map':
         navigate('/');
         break;
+      case 'dashboard':
+        navigate(selectedDeviceId ? `/dashboard?deviceId=${selectedDeviceId}` : '/dashboard');
+        break;
       case 'reports': {
         let id = selectedDeviceId;
         if (id == null) {
@@ -137,6 +144,13 @@ const BottomMenu = () => {
           }
           value="map"
         />
+        {!disableReports && (
+          <BottomNavigationAction
+            label={t('dashboardTitle')}
+            icon={<DashboardIcon />}
+            value="dashboard"
+          />
+        )}
         {!disableReports && (
           <BottomNavigationAction
             label={t('reportTitle')}
