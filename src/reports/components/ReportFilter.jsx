@@ -1,18 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Button,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Button, TextField, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import { useTranslation } from '../../common/components/LocalizationProvider';
 import useReportStyles from '../common/useReportStyles';
+import ReportDateRangePicker from './ReportDateRangePicker';
 import SplitButton from '../../common/components/SplitButton';
 import SelectField from '../../common/components/SelectField';
 import { useRestriction } from '../../common/util/permissions';
@@ -50,11 +43,10 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
   const groupIds = useMemo(() => searchParams.getAll('groupId').map(Number), [searchParams]);
   const from = searchParams.get('from');
   const to = searchParams.get('to');
-  const [period, setPeriod] = useState('today');
-  const [customFrom, setCustomFrom] = useState(
-    dayjs().subtract(1, 'hour').locale('en').format('YYYY-MM-DDTHH:mm'),
-  );
-  const [customTo, setCustomTo] = useState(dayjs().locale('en').format('YYYY-MM-DDTHH:mm'));
+  const [dateRange, setDateRange] = useState(() => [
+    from && dayjs(from).isValid() ? dayjs(from) : dayjs().startOf('day'),
+    to && dayjs(to).isValid() ? dayjs(to) : dayjs().endOf('day'),
+  ]);
   const [selectedOption, setSelectedOption] = useState('json');
 
   const [description, setDescription] = useState();
@@ -93,38 +85,16 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
     }
   }, [deviceIds, groupIds, from, to]);
 
+  useEffect(() => {
+    if (from && to && dayjs(from).isValid() && dayjs(to).isValid()) {
+      setDateRange([dayjs(from), dayjs(to)]);
+    }
+  }, [from, to]);
+
   const showReport = () => {
-    let selectedFrom;
-    let selectedTo;
-    switch (period) {
-      case 'today':
-        selectedFrom = dayjs().startOf('day');
-        selectedTo = dayjs().endOf('day');
-        break;
-      case 'yesterday':
-        selectedFrom = dayjs().subtract(1, 'day').startOf('day');
-        selectedTo = dayjs().subtract(1, 'day').endOf('day');
-        break;
-      case 'thisWeek':
-        selectedFrom = dayjs().startOf('week');
-        selectedTo = dayjs().endOf('week');
-        break;
-      case 'previousWeek':
-        selectedFrom = dayjs().subtract(1, 'week').startOf('week');
-        selectedTo = dayjs().subtract(1, 'week').endOf('week');
-        break;
-      case 'thisMonth':
-        selectedFrom = dayjs().startOf('month');
-        selectedTo = dayjs().endOf('month');
-        break;
-      case 'previousMonth':
-        selectedFrom = dayjs().subtract(1, 'month').startOf('month');
-        selectedTo = dayjs().subtract(1, 'month').endOf('month');
-        break;
-      default:
-        selectedFrom = dayjs(customFrom, 'YYYY-MM-DDTHH:mm');
-        selectedTo = dayjs(customTo, 'YYYY-MM-DDTHH:mm');
-        break;
+    const [selectedFrom, selectedTo] = dateRange;
+    if (!selectedFrom?.isValid() || !selectedTo?.isValid() || selectedTo.isBefore(selectedFrom)) {
+      return;
     }
 
     const newParams = new URLSearchParams(searchParams);
@@ -202,48 +172,9 @@ const ReportFilter = ({ children, onShow, onExport, onSchedule, deviceType, load
         </div>
       )}
       {selectedOption !== 'schedule' ? (
-        <>
-          <div className={classes.filterItem}>
-            <FormControl fullWidth>
-              <InputLabel>{t('reportPeriod')}</InputLabel>
-              <Select
-                label={t('reportPeriod')}
-                value={period}
-                onChange={(e) => setPeriod(e.target.value)}
-              >
-                <MenuItem value="today">{t('reportToday')}</MenuItem>
-                <MenuItem value="yesterday">{t('reportYesterday')}</MenuItem>
-                <MenuItem value="thisWeek">{t('reportThisWeek')}</MenuItem>
-                <MenuItem value="previousWeek">{t('reportPreviousWeek')}</MenuItem>
-                <MenuItem value="thisMonth">{t('reportThisMonth')}</MenuItem>
-                <MenuItem value="previousMonth">{t('reportPreviousMonth')}</MenuItem>
-                <MenuItem value="custom">{t('reportCustom')}</MenuItem>
-              </Select>
-            </FormControl>
-          </div>
-          {period === 'custom' && (
-            <div className={classes.filterItem}>
-              <TextField
-                label={t('reportFrom')}
-                type="datetime-local"
-                value={customFrom}
-                onChange={(e) => setCustomFrom(e.target.value)}
-                fullWidth
-              />
-            </div>
-          )}
-          {period === 'custom' && (
-            <div className={classes.filterItem}>
-              <TextField
-                label={t('reportTo')}
-                type="datetime-local"
-                value={customTo}
-                onChange={(e) => setCustomTo(e.target.value)}
-                fullWidth
-              />
-            </div>
-          )}
-        </>
+        <div className={classes.filterDateRange}>
+          <ReportDateRangePicker value={dateRange} onChange={setDateRange} />
+        </div>
       ) : (
         <>
           <div className={classes.filterItem}>

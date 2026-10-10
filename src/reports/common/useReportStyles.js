@@ -43,6 +43,10 @@ export default makeStyles()((theme) => ({
     minWidth: 0,
     flex: `1 1 ${theme.dimensions.filterFormWidth}`,
   },
+  filterDateRange: {
+    minWidth: 0,
+    flex: '2 1 300px',
+  },
   filterButtons: {
     display: 'flex',
     gap: theme.spacing(1),
